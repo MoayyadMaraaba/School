@@ -8,32 +8,32 @@ include "../config/keys.php";
 include "../lib/php-jwt/JWT.php";
 include "../lib/php-jwt/Key.php";
 
+require_once("../Utils/helper.php");
+
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
-    // check if theres is a key for name and password
-    if (isset($_POST["name"]) && isset($_POST["password"])) {
+    // check if theres is a key for email and password
+    if (isset($_POST["Email"]) && isset($_POST["Password"])) {
 
-        // Get name and email from user
-        $name = $_POST["name"];
-        $password = $_POST["password"];
+        // Get email and email from user
+        $email = $_POST["Email"];
+        $password = $_POST["Password"];
 
         // check for empty strings
-        if (!empty($name) && !empty($password)) {
+        if (!empty($email) && !empty($password)) {
 
-            $sql = "Select ID,Role From users where Name=:name AND Password=:password";
+            $sql = "Select ID,Role From users where Email=:email AND Password=:password";
 
             $stmt = $pdo->prepare($sql);
 
             $hashed = md5($password);
 
-            $stmt->bindParam(":name", $name);
+            $stmt->bindParam(":email", $email);
             $stmt->bindParam(":password", $hashed);
 
             $stmt->execute();
 
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-
 
             if (count($results) > 0) {
                 // Get user id and role 
@@ -42,12 +42,12 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
                 // generating json web token
                 $key = getKeyBasedOnRole($role);
-                $payload = ["id" => $userId, "role" => $role, "exp" => time() + 3600];
+                $payload = ["id" => $userId, "role" => $role, "exp" => time() + (3600 * 48)];
                 $jwt = JWT::encode($payload, $key, "HS256");
-
 
                 // Succesful response containing json web token
                 generateHttpResponse(200, "Success", "User Login Successfully", ["Token" => $jwt]);
+                return;
             } else {
                 // Wrong Credentials
                 generateHttpResponse(400, "Error", "Wrong Credentials", "");
@@ -75,18 +75,4 @@ function getKeyBasedOnRole($role)
     return $key;
 }
 
-function generateHttpResponse($code, $status, $message, $data = [])
-{
-    http_response_code($code);
-    $response = [
-        "Status" => $status,
-        "Message" => $message,
-    ];
-
-    if (!empty($data)) {
-        $response = array_merge($response, $data);
-    }
-
-    echo json_encode($response);
-}
 ?>

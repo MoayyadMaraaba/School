@@ -1,6 +1,6 @@
 <?php
     try {
-        $connectionString = "mysql:host=localhost:3308;dbname=test";
+        $connectionString = "mysql:host=localhost:3308;dbname=school";
         $username = "root";
         $password = "";
 
