@@ -1,4 +1,5 @@
 <?php
+
 include "../config/keys.php";
 include "../config/db.php";
 
@@ -16,7 +17,7 @@ $authHeader = $headers["Authorization"];
 $decoded = verifyToken($authHeader, RegistrarSecret);
 
 if ($decoded != null) {
-    $sql = "SELECT * FROM Subjects";
+    $sql = "SELECT ID,Name,Email,Age,Gender FROM Users WHERE Role = 'Student'";
 
     $stmt = $pdo->prepare($sql);
 
@@ -24,6 +25,7 @@ if ($decoded != null) {
 
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    generateHttpResponse(200, "Success", "", ["Subjects" => $results]);
+    generateHttpResponse(200, "Success", "", ["Students" => $results]);
 }
+
 ?>
