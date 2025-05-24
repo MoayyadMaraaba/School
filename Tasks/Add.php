@@ -58,10 +58,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                 for ($i = 0; $i < count($results); $i++) {
-                    $sql = "INSERT INTO Tasks(Name, Type, Description, UserID, Mark, SubjectID) VALUES (:name, :type, :description, :userID, :mark, :subjectID)";
+                    $sql = "INSERT INTO Tasks(Name, Type, Description, UserID, Mark, SubjectID, Answer) VALUES (:name, :type, :description, :userID, :mark, :subjectID, :answer)";
                     $stmt = $pdo->prepare($sql);
 
                     $mark = 0;
+                    $answer = "";
 
                     $stmt->bindParam(":name", $name);
                     $stmt->bindParam(":type", $type);
@@ -69,6 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->bindParam(":userID", $results[$i]["ID"]);
                     $stmt->bindParam(":mark", $mark);
                     $stmt->bindParam(":subjectID", $subjectID);
+                    $stmt->bindParam(":answer", $answer);
 
                     $stmt->execute();
                 }

@@ -20,24 +20,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($decoded != null) {
         // Get the data from the body
-        if (isset($_POST["ID"]) && isset($_POST["Name"]) && isset($_POST["TeacherID"]) && isset($_POST["Time"]) && isset($_POST["Start"]) && isset($_POST["Day"])) {
+        if (isset($_POST["ID"]) && isset($_POST["Name"]) && isset($_POST["TeacherID"]) && isset($_POST["End"]) && isset($_POST["Start"]) && isset($_POST["Day"])) {
             $id = $_POST["ID"];
             $name = $_POST["Name"];
             $teacherID = $_POST["TeacherID"];
-            $time = $_POST["Time"];
+            $end = $_POST["End"];
             $start = $_POST["Start"];
             $day = $_POST["Day"];
 
-            if (!empty($id) && !empty($name) && !empty($teacherID) && !empty($time) && !empty($start) && !empty($day)) {
+            if (!empty($id) && !empty($name) && !empty($teacherID) && !empty($end) && !empty($start) && !empty($day)) {
 
-                $sql = "UPDATE Subjects SET Name = :name, TeacherID = :teacherID, Time = :time, Start = :start, Day = :day WHERE ID = :id";
+                // Check if the time is availabe
+                $sql = "SELECT Start, End FROM `subjects` WHERE (Start < :newEnd) AND (End > :newStart) AND Day = :day AND TeacherID = :teacherID";
+
+                $stmt = $pdo->prepare($sql);
+
+                $stmt->bindParam(":newEnd", $end);
+                $stmt->bindParam(":newStart", $start);
+                $stmt->bindParam(":day", $day);
+                $stmt->bindParam(":teacherID", $teacherID);
+
+                $stmt->execute();
+
+                if ($stmt->rowCount() > 0) {
+                    generateHttpResponse(400, "Error", "Teacher is busy", "");
+                    return;
+                }
+
+                $sql = "UPDATE Subjects SET Name = :name, TeacherID = :teacherID, End = :end, Start = :start, Day = :day WHERE ID = :id";
 
                 $stmt = $pdo->prepare($sql);
 
                 $stmt->bindParam(":id", $id);
                 $stmt->bindParam(":name", $name);
                 $stmt->bindParam(":teacherID", $teacherID);
-                $stmt->bindParam(":time", $time);
+                $stmt->bindParam(":end", $end);
                 $stmt->bindParam(":start", $start);
                 $stmt->bindParam(":day", $day);
 
