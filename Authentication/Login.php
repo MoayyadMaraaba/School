@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 $jwt = JWT::encode($payload, $key, "HS256");
 
                 // Succesful response containing json web token
-                generateHttpResponse(200, "Success", "User Login Successfully", ["Token" => $jwt]);
+                generateHttpResponse(200, "Success", "User Login Successfully", ["Token" => $jwt, "Role" => $role]);
                 return;
             } else {
                 // Wrong Credentials
