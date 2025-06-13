@@ -20,16 +20,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($decoded != null) {
         // Get the data from the body
-        if (isset($_POST["ID"])) {
-            $id = $_POST["ID"];
+        if (isset($_POST["SubjectID"]) && isset($_POST["ClassID"])) {
+            $subjectID = $_POST["SubjectID"];
+            $classID = $_POST["ClassID"];
 
-            if (!empty($id)) {
+            if (!empty($subjectID) && !empty($classID)) {
 
-                $sql = "DELETE FROM ClassSubjects WHERE ID = :id";
+                $sql = "DELETE FROM ClassSubjects WHERE SubjectID = :subjectID AND ClassID = :classID";
 
                 $stmt = $pdo->prepare($sql);
 
-                $stmt->bindParam(":id", $id);
+                $stmt->bindParam(":subjectID", $subjectID);
+                $stmt->bindParam(":classID", $classID);
 
                 $stmt->execute();
 

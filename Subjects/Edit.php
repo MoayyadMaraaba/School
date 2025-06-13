@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 $stmt->execute();
 
-                if ($stmt->rowCount() > 0) {
+                if ($stmt->rowCount() > 1) {
                     generateHttpResponse(400, "Error", "Teacher is busy", "");
                     return;
                 }

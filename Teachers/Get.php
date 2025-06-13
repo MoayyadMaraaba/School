@@ -16,7 +16,7 @@ $authHeader = $headers["Authorization"];
 $decoded = verifyToken($authHeader, RegistrarSecret);
 
 if ($decoded != null) {
-    $sql = "SELECT subjects.* , users.Name AS TeacherName  FROM subjects LEFT JOIN users ON subjects.TeacherID = users.ID;";
+    $sql = "SELECT * FROM users WHERE Role = 'Teacher'";
 
     $stmt = $pdo->prepare($sql);
 
@@ -24,6 +24,6 @@ if ($decoded != null) {
 
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    generateHttpResponse(200, "Success", "", ["Subjects" => $results]);
+    generateHttpResponse(200, "Success", "", ["Teachers" => $results]);
 }
 ?>

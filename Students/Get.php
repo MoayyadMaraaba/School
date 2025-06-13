@@ -17,7 +17,7 @@ $authHeader = $headers["Authorization"];
 $decoded = verifyToken($authHeader, RegistrarSecret);
 
 if ($decoded != null) {
-    $sql = "SELECT ID,Name,Email,Age,Gender FROM Users WHERE Role = 'Student'";
+    $sql = "SELECT ID,Name,Email,Age,Gender,ClassID FROM Users WHERE Role = 'Student'";
 
     $stmt = $pdo->prepare($sql);
 

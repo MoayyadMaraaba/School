@@ -31,7 +31,7 @@ if ($decoded != null) {
 
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            generateHttpResponse(200, "Success", "Students in class", ["Subjects" => $results]);
+            generateHttpResponse(200, "Success", "Subjects in class", ["Subjects" => $results]);
             return;
         } else {
             // Empty inputs
