@@ -22,10 +22,18 @@ if ($decoded != null) {
         $sql .= " WHERE Tasks.UserID = :UserID";
     }
 
+    if($decoded->role == "Teacher") {
+        $sql = "SELECT tasks.Name,Type,Description, tasks.SubjectID FROM Tasks LEFT JOIN subjects ON tasks.SubjectID = subjects.ID WHERE subjects.TeacherID = :teacherID GROUP BY tasks.Name, tasks.SubjectID";
+    }
+
     $stmt = $pdo->prepare($sql);
 
     if ($decoded->role == "Student") {
         $stmt->bindParam(":UserID", $decoded->id);
+    }
+
+    if($decoded->role == "Teacher") {
+        $stmt->bindParam(":teacherID", $decoded->id);
     }
     
     $stmt->execute();
